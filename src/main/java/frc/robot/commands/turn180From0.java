@@ -11,42 +11,45 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 
-public class launchAuto extends CommandBase {
+public class turn180From0 extends CommandBase {
   /**
-   * Creates a new launchAuto.
+   * Creates a new turnFromTrenc hToTargetLeftAuto.
    */
-
-  private Timer autoLaunchTimer = new Timer();
-  public launchAuto() {
+  double desiredAngle;
+  Timer turnTimer = new Timer();
+  public turn180From0() {
     // Use addRequirements() here to declare subsystem dependencies.
+    desiredAngle = 180;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    autoLaunchTimer.start();
+    turnTimer.start();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Robot.m_robotContainer.tracker.set(true);
-    Robot.m_robotContainer.launchCommand.set(true, false, false, false, false);
-    if (autoLaunchTimer.get() > .5) {
-      Robot.m_robotContainer.launchCommand.feeder.feederMotor.set(0.5);
-    }
+    double currentAngle = (Robot.m_robotContainer.m_drivebase.m_gyro.getAngle() + 90);
+
+    double error = Math.abs(desiredAngle - currentAngle);
+    
+    double kP = 0.0075;
+    double output = (kP * error);
+
+    Robot.m_robotContainer.m_drivebase.m_drive.arcadeDrive(0, output);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    Robot.m_robotContainer.tracker.set(false);
-    Robot.m_robotContainer.launchCommand.set(false, false, false, false, false);
+  public void end(final boolean interrupted) {
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return autoLaunchTimer.get() > 4;
+    return turnTimer.get() > 10; 
   }
 }

@@ -9,13 +9,10 @@ package frc.robot;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -24,24 +21,18 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.commands.trackToPortLeftAuto;
-import frc.robot.commands.turnFromTrenchToTargetLeftAuto;
+
+import frc.robot.commands.turnToAngle;
 import frc.robot.commands.autoIntake;
 import frc.robot.commands.launch;
 import frc.robot.commands.launchAuto;
 import frc.robot.commands.trackTarget;
+import frc.robot.commands.turn90From0;
 import frc.robot.subsystems.ClimberBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeBase;
@@ -79,7 +70,6 @@ public class RobotContainer {
   boolean prevLAxis = false;
   boolean prevRAxis = false;
   boolean prevRBumper = false;
-
 
   // Initialize joysticks
   public final XboxController driveJoy = new XboxController(1);
@@ -119,10 +109,6 @@ public class RobotContainer {
 
   public void roboPeriodic() {
     tracker.schedule();
-    SmartDashboard.putNumber("Turret Angle", tracker.turret.turretMotor.getEncoder().getPosition());
-    SmartDashboard.putNumber("In Range", launchCommand.launcher.calculateRPMModel());
-    SmartDashboard.putNumber("Current RPM", launchCommand.launcher.lLaunchMotor.getEncoder().getVelocity());
-    rpmSet = SmartDashboard.getNumber("RPM Controller", 0);
   }
 
   public void autoInit() {
@@ -130,34 +116,13 @@ public class RobotContainer {
   }
 
   public void teleopIn() {
-    SmartDashboard.putNumber("RPM Controller", 0);
-    SmartDashboard.putNumber("P", 0);
-    SmartDashboard.putNumber("I", 0);
-    SmartDashboard.putNumber("D", 0);
-    SmartDashboard.putNumber("FF", 0);
-    SmartDashboard.putNumber("IZ", 0);
-    SmartDashboard.putNumber("intake RPM", 0);
   }
 
   public void teleop() {
     // SMARTDASHBOARD
 
-    SmartDashboard.putNumber("Left Enconder", m_drivebase.leftEnc.getDistance());
-    SmartDashboard.putNumber("Right Encoder", m_drivebase.rightEnc.getDistance());
-
     // DRIVE JOYSTICK
     // // DRIVEBASE
-
-    SlewRateLimiter rotationFilter1 = new SlewRateLimiter(0.5);
-    SlewRateLimiter rotationFilter2 = new SlewRateLimiter(0.5);
-    SlewRateLimiter speedFilter1 = new SlewRateLimiter(0.5);
-    SlewRateLimiter speedFilter2 = new SlewRateLimiter(0.5);
-
-    double filterYL1 = speedFilter1.calculate((-Math.pow(getDriveJoy(Constants.YL), 2) / 2));
-    double filterYL2 = speedFilter2.calculate((-Math.pow(getDriveJoy(Constants.YL), 2) / 2));
-
-    double filterXR1 = rotationFilter1.calculate((Math.pow(getDriveJoy(Constants.XR), 2) / 2));
-    double filterXR2 = rotationFilter2.calculate((Math.pow(getDriveJoy(Constants.XR), 2) / 2));
 
     if (Math.abs(getDriveJoy(Constants.YL)) > 0.2) {
       m_drivebase.m_drive.curvatureDrive(-getDriveJoy(Constants.YL), getDriveJoyXR(), driveJoy.getBButtonPressed());
@@ -236,7 +201,8 @@ public class RobotContainer {
       launchCommand.feeder.feederMotor.set(0.5);
     } else if (RAxis) {
       launchCommand.feeder.feederMotor.set(-0.5);
-    } else if ((!RAxis && prevRAxis) || (!LAxis && prevLAxis) || opJoy.getBumperReleased(Hand.kRight) || opJoy.getAButtonReleased()) {
+    } else if ((!RAxis && prevRAxis) || (!LAxis && prevLAxis) || opJoy.getBumperReleased(Hand.kRight)
+        || opJoy.getAButtonReleased()) {
       launchCommand.feeder.feederMotor.set(0);
     } else if (!shootReady && !shooting && !indexing) {
       launchCommand.feeder.feederMotor.set(0);
@@ -294,20 +260,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand(String path) {
-    String location = "output/" + path + ".wpilib.json";
     switch (path) {
     case "6 Ball Path":
-      return new launchAuto().andThen(new ParallelRaceGroup(pathFollow(location), new autoIntake()))
-          .andThen(new launchAuto());
+    return new launchAuto().andThen(new turnToAngle(0)).andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()));
+      //return new launchAuto().andThen(pathFollow("output/6 Ball Path Part 1.wpilib.json")).alongWith(new autoIntake()).andThen(new launchAuto());
+    case "6 Ball Manual":
+      return new launchAuto().andThen(new turn90From0()).andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()));
     case "Left Turn":
-      return new turnFromTrenchToTargetLeftAuto();
-    case "Left Turn from Init":
-      return new launchAuto().andThen(new ParallelRaceGroup(pathFollow(location), new autoIntake())
-          .andThen(new turnFromTrenchToTargetLeftAuto()).andThen(new trackToPortLeftAuto()));
+      return new turnToAngle(0);
     case "3 Ball Forward":
       return new launchAuto().andThen(pathFollow("output/Line.wpilib.json"));
-    case "Turn Line":
-      return pathFollow("output/Turn Line.wpilib.json");
     case "Line":
       return pathFollow("output/Line.wpilib.json");
     }
@@ -315,49 +277,10 @@ public class RobotContainer {
   }
 
   public Command pathFollow(String pathLocation) {
-
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    final var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltSecondsPerMeter,
-            Constants.kaVoltSecondsSquaredPerMeter),
-        Constants.m_driveKinematics, 10);
-
-    // // Create config for trajectory
-    final TrajectoryConfig config = new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond,
-        Constants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(Constants.m_driveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-    // An example trajectory to follow. All units in meters.
-    /*
-     * Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory( //
-     * Start at the origin facing the +X direction new Pose2d(0, 0, new
-     * Rotation2d(0)), // Pass through these two interior waypoints, making an 's'
-     * curve path List.of( new Translation2d(1, 1), new Translation2d(2, -1) ), //
-     * End 3 meters straight ahead of where we started, facing forward new Pose2d(3,
-     * 0, new Rotation2d(0)), // Pass config config );
-     */
-
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(2, -1, new Rotation2d()),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(2.5, -1.25), new Translation2d(3, -1.5), new Translation2d(3.5, -1.75),
-            new Translation2d(4, -2), new Translation2d(3.5, -2.25), new Translation2d(3, -2.5),
-            new Translation2d(2.5, -2.75)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(2, -3, new Rotation2d(180)),
-        // Pass config
-        config);
-
     String trajectoryJSON = pathLocation;
     try {
       Path testTrajectory = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
       trajectory = TrajectoryUtil.fromPathweaverJson(testTrajectory);
-      // trajectory =
-      // TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON));
     } catch (final IOException ex) {
       // TODO Auto-generated catch block
       DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());

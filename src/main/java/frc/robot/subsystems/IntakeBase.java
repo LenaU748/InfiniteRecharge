@@ -21,7 +21,6 @@ public class IntakeBase extends SubsystemBase {
 
   public IntakeBase() {
     intakeMotor.setSmartCurrentLimit(Constants.LIM2);
-    //configPeakCurrentLimit(Constants.LIM);
   }
 
   @Override

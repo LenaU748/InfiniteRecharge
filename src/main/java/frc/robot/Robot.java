@@ -30,10 +30,9 @@ public class Robot extends TimedRobot {
   public static SendableChooser<String> autoChooser = new SendableChooser<String>();
   public static RobotContainer m_robotContainer;
   public static Timer timer;
-  //public int setpoint = 0;
+  // public int setpoint = 0;
   Compressor c = new Compressor();
   double prevTime;
-
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -44,23 +43,17 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-  
-    //Auto Chooser
+
+    // Auto Chooser
     autoChooser.addOption("3 Ball Forward", "3 Ball Forward");
-    autoChooser.addOption("6 Ball", "6 Ball Path");
-    autoChooser.addOption("Turn Line", "Turn Line");
-    autoChooser.addOption("Left Turn from Init", "Left Turn from Init");
+    autoChooser.addOption("6 Ball Path", "6 Ball Path");
     autoChooser.addOption("Left Turn", "Left Turn");
     autoChooser.addOption("Line", "Line");
 
-    // autoChooser.addOption("U Shape", "U Shape");
-    // autoChooser.addOption("8 Ball Auto Left", "8 Ball Auto Left");
-    // autoChooser.addOption("8 Ball Auto Left Sparse", "output/output/8 Ball Auto
-    // Left Sparse.wpilib.json");
     SmartDashboard.putData("Autonomous routine", autoChooser);
     m_robotContainer.roboInit();
 
-    //LIDAR
+    // LIDAR
     m_robotContainer.launchCommand.launcher.lidar.startMeasuring();
   }
 
@@ -84,24 +77,6 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
 
     CommandScheduler.getInstance().run();
-    // SmartDashboard.putNumber("Left Encoder",
-    // m_robotContainer.m_driveAuto.left_encPos);
-    // SmartDashboard.putNumber("Right Encoder",
-    // m_robotContainer.m_driveAuto.right_encPos);
-    // SmartDashboard.putNumber("Left Vel",
-    // m_robotContainer.m_driveAuto.left_encVel);
-    // SmartDashboard.putNumber("Right Vel",
-    // m_robotContainer.m_driveAuto.right_encVel);
-    // SmartDashboard.putNumber("Gyro", m_robotContainer.m_driveAuto.getHeading());
-    // SmartDashboard.putNumber("x",
-    // m_robotContainer.m_driveAuto.getPose().getTranslation().getX());
-    // SmartDashboard.putNumber("y",
-    // m_robotContainer.m_driveAuto.getPose().getTranslation().getY());
-    // SmartDashboard.putNumber("Heading",
-    // m_robotContainer.m_driveAuto.getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("x", m_robotContainer.m_drivebase.getPose().getTranslation().getX());
-    SmartDashboard.putNumber("y", m_robotContainer.m_drivebase.getPose().getTranslation().getY());
-    SmartDashboard.putNumber("Heading", m_robotContainer.m_drivebase.getPose().getRotation().getDegrees());
     m_robotContainer.roboPeriodic();
     m_robotContainer.launchCommand.schedule();
   }
@@ -129,10 +104,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_drivebase.resetOdometry(
         new Pose2d(new Translation2d(m_robotContainer.m_drivebase.initX(), m_robotContainer.m_drivebase.initY()),
             new Rotation2d(m_robotContainer.m_drivebase.initTheta())));
-    // m_robotContainer.m_driveAuto.m_drive.feed();
-    // m_robotContainer.m_turretBase.zeroTurret();
-    // m_robotContainer.autoInit();
-    // schedule the autonomous command (example)
     if (autoChooser.getSelected() != null) {
       m_autoCommand = m_robotContainer.getAutonomousCommand(autoChooser.getSelected());
       m_autoCommand.schedule();
@@ -180,12 +151,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_robotContainer.teleop();
-    
-    SmartDashboard.putNumber("Feeder Pos", m_robotContainer.launchCommand.feeder.feederPos);
+
     SmartDashboard.putNumber("Ball Count", m_robotContainer.launchCommand.feeder.ballCount);
-    SmartDashboard.putBoolean("Shoot Ready", m_robotContainer.shootReady);
-    SmartDashboard.putNumber("Launch Timer", m_robotContainer.launcherTimer.get());
-    SmartDashboard.getNumber("RPM", 0);
   }
 
   @Override

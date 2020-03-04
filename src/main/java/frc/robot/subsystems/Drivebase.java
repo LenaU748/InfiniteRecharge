@@ -55,21 +55,6 @@ public class Drivebase extends SubsystemBase {
 
   public String path = Robot.autoChooser.getSelected() == null ? "Nope" : Robot.autoChooser.getSelected();
 
-  // public final SpeedControllerGroup leftMotors = new
-  // SpeedControllerGroup(lfMotor, lbMotor);
-  // public final SpeedControllerGroup rightMotors = new
-  // SpeedControllerGroup(rfMotor, rbMotor);
-
-  // public double left_encPos = -lfMotor.getSelectedSensorPosition() *
-  // Constants.kEncoderDistancePerPulse;
-  // public double right_encPos = rfMotor.getSelectedSensorPosition() *
-  // Constants.kEncoderDistancePerPulse;
-
-  // public double left_encVel = -lfMotor.getSelectedSensorVelocity() *
-  // Constants.kEncoderDistancePerPulse;
-  // public double right_encVel = rfMotor.getSelectedSensorVelocity() *
-  // Constants.kEncoderDistancePerPulse;
-
   public final DifferentialDriveOdometry m_odometry;
 
   public Drivebase() {
@@ -127,9 +112,7 @@ public class Drivebase extends SubsystemBase {
       return 0;
     case "6 Ball Path":
       return 3.2;
-    case "Left Turn from Init":
-      return 3.1;
-    case "Turn Line":
+    case "Left Turn":
       return 1;
     case "3 Ball Forward":
       return 1;
@@ -146,9 +129,7 @@ public class Drivebase extends SubsystemBase {
       return 0;
     case "6 Ball Path":
       return -0.7;
-    case "Left Turn from Init":
-      return -2.3;
-    case "Turn Line":
+    case "Left Turn":
       return -1;
     case "3 Ball Forward":
       return -1;
@@ -163,13 +144,27 @@ public class Drivebase extends SubsystemBase {
     case "Nope":
       return Rotation2d.fromDegrees(0).getRadians();
     case "6 Ball Path":
-      return Rotation2d.fromDegrees(-90).getRadians(); // -90 or 270?
-    case "Left Turn from Init":
-      return Rotation2d.fromDegrees(90).getRadians();
-    case "Turn Line":
-      return Rotation2d.fromDegrees(180).getRadians();
+      return Rotation2d.fromDegrees(90).getRadians(); // -90 or 270?
+    case "Left Turn":
+      return Rotation2d.fromDegrees(-90).getRadians();
     case "3 Ball Forward":
       return Rotation2d.fromDegrees(0).getRadians();
+    case "Line":
+      return 0;
+    }
+  }
+
+  public double initAngle() {
+    switch (path) {
+    default:
+    case "Nope":
+      return 0;
+    case "6 Ball Path":
+      return 90; // -90 or 270?
+    case "Left Turn":
+      return -90;
+    case "3 Ball Forward":
+      return 0;
     case "Line":
       return 0;
     }
@@ -209,9 +204,12 @@ public class Drivebase extends SubsystemBase {
    * @return the robot's heading in degrees, from 180 to 180
    */
   public double getHeading() {
-    return -m_gyro.getYaw() + Math.toDegrees(initTheta());
+    return -m_gyro.getYaw();
   }
 
+  public double getHeadingActual() {
+    return -m_gyro.getYaw() + Math.toDegrees(initTheta());
+  }
   /**
    * Returns the turn rate of the robot.
    *

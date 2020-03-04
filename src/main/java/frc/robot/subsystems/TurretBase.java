@@ -14,7 +14,6 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-//import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -24,18 +23,6 @@ public class TurretBase extends SubsystemBase {
   public final CANPIDController turretPID = turretMotor.getPIDController();
   public DigitalInput hallEffect = new DigitalInput(Constants.HALL);
 
-  // boolean hasRun = false;
-
-  // public boolean turretLimited(){
-  // return Math.abs(turretMotor.getEncoder().getPosition())>= maxLim;
-  // }
-
-  // public void checkTurret(){
-  // if(turretLimited()){
-  // turretMotor.set(0.0);
-  // }
-  // }
-
   public TurretBase() {
     turretPID.setP(Constants.kTurretP);
     turretPID.setI(Constants.kTurretI);
@@ -44,7 +31,6 @@ public class TurretBase extends SubsystemBase {
     turretPID.setIZone(Constants.kTurretIZ);
     turretPID.setOutputRange(-0.25, 0.25);
 
-    // turretMotor.getEncoder().setInverted(true);
     turretMotor.getEncoder().setPositionConversionFactor((1 / 46.67) * 360); // 46.67 motor rotations is one turret
                                                                              // rotation
     turretMotor.enableSoftLimit(SoftLimitDirection.kForward, true);

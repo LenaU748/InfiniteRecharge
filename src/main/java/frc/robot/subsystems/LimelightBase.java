@@ -13,14 +13,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTable;
 
 public class LimelightBase extends SubsystemBase {
-  /**
-   * Creates a new LimelightBase.
-   */
-  // boolean tracking = false;
+
   public LimelightBase() {
   }
 
-  // zee preauxlet terre iate ville raise wune deay yue boodge wha zee fule!
   NetworkTable m_limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
   double tv = get("tv");
 

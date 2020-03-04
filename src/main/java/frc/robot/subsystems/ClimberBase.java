@@ -23,26 +23,8 @@ public class ClimberBase extends SubsystemBase {
   public final CANPIDController climberPID = climberMotor.getPIDController();
 
   public ClimberBase() {
-    // climberPID.setP(Constants.kclimberP);
-    // climberPID.setI(Constants.kclimberI);
-    // climberPID.setD(Constants.kclimberD);
-    // climberPID.setFF(Constants.kclimberFF);
-    // climberPID.setIZone(Constants.kclimberIZ);
     climberPID.setOutputRange(-1.0, 1.0);
   }
-
-//  public void brake(){
-//  if (Math.abs(climberMotor.getEncoder().getVelocity()) > 0.05){
-//    climberBrake.set(Value.kForward);
-//  }else{
-//    climberBrake.set(Value.kReverse);
-//  } 
-//  }
-
-//while the motor is moving brake is out 
-//if get velocity not zero, set postition rbitray direction
-
-
 
   @Override
   public void periodic() {

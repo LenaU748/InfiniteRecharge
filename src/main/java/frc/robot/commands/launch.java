@@ -28,6 +28,7 @@ public class launch extends CommandBase {
   boolean indexing;
   boolean trenchShot;
   boolean indexOut;
+  double trenchRPM = 5600;
 
   public launch(boolean _shootReady) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -52,12 +53,12 @@ public class launch extends CommandBase {
     // May need to fix this range
     if (shootReady || trenchShot) {
       if (shootReady) {
-        return (launcher.lLaunchMotor.getEncoder().getVelocity() >= .95 * launcher.calculateRPMModel()
-            && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.05 * launcher.calculateRPMModel()))
+        return (launcher.lLaunchMotor.getEncoder().getVelocity() >= .98 * launcher.calculateRPMModel()
+            && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.02 * launcher.calculateRPMModel()))
             || launcher.lLaunchMotor.getEncoder().getVelocity() > 5800;
       } else {
-        return (launcher.lLaunchMotor.getEncoder().getVelocity() >= .95 * Robot.m_robotContainer.rpmSet
-            && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.05 * Robot.m_robotContainer.rpmSet))
+        return (launcher.lLaunchMotor.getEncoder().getVelocity() >= .98 * trenchRPM
+            && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.02 * trenchRPM))
             || launcher.lLaunchMotor.getEncoder().getVelocity() > 5800;
       }
     } else {
@@ -82,7 +83,7 @@ public class launch extends CommandBase {
       if (shootReady) {
         launcher.setRPM(launcher.calculateRPMModel());
       } else {
-        launcher.setRPM(Robot.m_robotContainer.rpmSet); // change RPM value for trench shot
+        launcher.setRPM(trenchRPM);
       }
 
       if (inRange()) {
@@ -109,42 +110,6 @@ public class launch extends CommandBase {
         launcher.stop();
       }
     }
-
-    /////////////////////
-    // if (shootReady) {
-    // launcher.setRPM(launcher.calculateRPMModel());
-
-    // if (inRange()) {
-    // feeder.feederPID.setReference(6, ControlType.kVoltage);
-    // feeder.ballCount = 0;
-    // feeder.indexMotor.set(.75);
-
-    // } else {
-    // feeder.feederPID.setReference(0, ControlType.kVoltage);
-    // }
-    // } else {
-    // if (!shooting) {
-    // launcher.stop();
-    // if (!indexing) {
-    // feeder.feederPID.setReference(0, ControlType.kVoltage);
-    // }
-    // } else {
-    // launcher.setRPM(5000);
-    // if (!indexing) {
-
-    // feeder.feederPID.setReference(0, ControlType.kVoltage);
-    // }
-    // }
-    // }
-
-    // if (indexing && !shootReady) {
-    // feeder.indexMotor.set(.75);
-    // if (feeder.limitSwitchPressed()) {
-    // feeder.feederPID.setReference(feeder.feederPos + Constants.feederRevForBall,
-    // ControlType.kPosition);
-    // feeder.ballCount++;
-    // }
-    // }
   }
 
   // Called once the command ends or is interrupted.

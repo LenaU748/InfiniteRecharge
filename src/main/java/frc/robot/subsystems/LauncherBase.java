@@ -33,7 +33,6 @@ public class LauncherBase extends SubsystemBase {
   public LauncherBase() {
     lidar.startMeasuring();
     lLaunchMotor.setInverted(true);
-    //lLaunchMotor.setIdleMode(mode)
     
     lLaunchPID.setP(Constants.kLauncherP);
     lLaunchPID.setI(Constants.kLauncherI);

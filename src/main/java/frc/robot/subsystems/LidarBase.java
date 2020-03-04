@@ -10,13 +10,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.nio.ByteBuffer;
-//import java.util.TimerTask;
-
 import edu.wpi.first.hal.I2CJNI;
-//import edu.wpi.first.wpilibj.I2C;
-//import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LidarBase extends SubsystemBase {
     private static final byte k_deviceAddress = 0x62;
