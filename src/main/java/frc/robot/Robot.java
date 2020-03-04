@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
     // Auto Chooser
     autoChooser.addOption("3 Ball Forward", "3 Ball Forward");
     autoChooser.addOption("6 Ball Path", "6 Ball Path");
+    autoChooser.addOption("6 Ball Manual", "6 Ball Manual");
     autoChooser.addOption("Left Turn", "Left Turn");
     autoChooser.addOption("Line", "Line");
 

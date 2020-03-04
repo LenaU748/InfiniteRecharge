@@ -26,13 +26,15 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.turnToAngle;
 import frc.robot.commands.autoIntake;
 import frc.robot.commands.launch;
 import frc.robot.commands.launchAuto;
-import frc.robot.commands.trackTarget;
 import frc.robot.commands.turn90From0;
+import frc.robot.commands.trackTarget;
+import frc.robot.commands.trackToPortLeftAuto;
+import frc.robot.commands.turn180From0;
 import frc.robot.subsystems.ClimberBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeBase;
@@ -262,10 +264,15 @@ public class RobotContainer {
   public Command getAutonomousCommand(String path) {
     switch (path) {
     case "6 Ball Path":
-    return new launchAuto().andThen(new turnToAngle(0)).andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()));
-      //return new launchAuto().andThen(pathFollow("output/6 Ball Path Part 1.wpilib.json")).alongWith(new autoIntake()).andThen(new launchAuto());
+      return new launchAuto().andThen(new turnToAngle(0))
+          .andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()));
+    // return new launchAuto().andThen(pathFollow("output/6 Ball Path Part
+    // 1.wpilib.json")).alongWith(new autoIntake()).andThen(new launchAuto());
     case "6 Ball Manual":
-      return new launchAuto().andThen(new turn90From0()).andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()));
+      return new launchAuto().andThen(new turn90From0())
+          .andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()))
+          .andThen(new turn180From0()).andThen(new trackToPortLeftAuto())
+          .alongWith(new WaitCommand(2).andThen(new launchAuto()));
     case "Left Turn":
       return new turnToAngle(0);
     case "3 Ball Forward":

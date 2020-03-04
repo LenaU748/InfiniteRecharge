@@ -112,6 +112,8 @@ public class Drivebase extends SubsystemBase {
       return 0;
     case "6 Ball Path":
       return 3.2;
+    case "6 Ball Manual":
+      return 3.2;
     case "Left Turn":
       return 1;
     case "3 Ball Forward":
@@ -129,6 +131,8 @@ public class Drivebase extends SubsystemBase {
       return 0;
     case "6 Ball Path":
       return -0.7;
+    case "6 Ball Manual":
+      return -.7;
     case "Left Turn":
       return -1;
     case "3 Ball Forward":
@@ -144,7 +148,9 @@ public class Drivebase extends SubsystemBase {
     case "Nope":
       return Rotation2d.fromDegrees(0).getRadians();
     case "6 Ball Path":
-      return Rotation2d.fromDegrees(90).getRadians(); // -90 or 270?
+      return Rotation2d.fromDegrees(0).getRadians(); // -90 or 270?
+    case "6 Ball Manual":
+      return Rotation2d.fromDegrees(0).getRadians();
     case "Left Turn":
       return Rotation2d.fromDegrees(-90).getRadians();
     case "3 Ball Forward":
@@ -160,7 +166,9 @@ public class Drivebase extends SubsystemBase {
     case "Nope":
       return 0;
     case "6 Ball Path":
-      return 90; // -90 or 270?
+      return 0; // -90 or 270?
+    case "6 Ball Manual":
+      return 0;
     case "Left Turn":
       return -90;
     case "3 Ball Forward":
@@ -210,6 +218,7 @@ public class Drivebase extends SubsystemBase {
   public double getHeadingActual() {
     return -m_gyro.getYaw() + Math.toDegrees(initTheta());
   }
+
   /**
    * Returns the turn rate of the robot.
    *
