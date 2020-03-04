@@ -264,7 +264,7 @@ public class RobotContainer {
   public Command getAutonomousCommand(String path) {
     switch (path) {
     case "6 Ball Path":
-      return new launchAuto().andThen(new turnToAngle(900))
+      return new launchAuto().andThen(new turnToAngle(0))
           .andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()));
     // return new launchAuto().andThen(pathFollow("output/6 Ball Path Part
     // 1.wpilib.json")).alongWith(new autoIntake()).andThen(new launchAuto());
