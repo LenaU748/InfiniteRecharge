@@ -13,12 +13,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTable;
 
 public class LimelightBase extends SubsystemBase {
-
-  public LimelightBase() {
-  }
-
   NetworkTable m_limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
   double tv = get("tv");
+
+  public LimelightBase() {
+    m_limelightTable.getEntry("pipeline").setNumber(0);
+  }
 
   public double get(String var) {
     return NetworkTableInstance.getDefault().getTable("limelight").getEntry(var).getDouble(0.0);
@@ -27,8 +27,6 @@ public class LimelightBase extends SubsystemBase {
   public void setTracking(boolean tracking) {
     m_limelightTable.getEntry("camMode").setNumber(tracking ? 0 : 1);
     m_limelightTable.getEntry("ledMode").setNumber(tracking ? 0 : 1);
-    m_limelightTable.getEntry("pipeline").setNumber(1);
-
   }
 
   public boolean getTracking() {

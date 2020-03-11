@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,6 +28,13 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
  */
 public class Robot extends TimedRobot {
   private Command m_autoCommand;
+  private Command m_autoCommand1;
+  private Command m_autoCommand2;
+  private Command m_autoCommand3;
+  private Command m_autoCommand4;
+  private Command m_autoCommand5;
+  private Command m_autoCommand6;
+  private Command m_autoCommand7;
   public static SendableChooser<String> autoChooser = new SendableChooser<String>();
   public static RobotContainer m_robotContainer;
   public static Timer timer;
@@ -39,15 +47,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    CameraServer.getInstance().startAutomaticCapture();
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
     // Auto Chooser
     autoChooser.addOption("3 Ball Forward", "3 Ball Forward");
+    autoChooser.addOption("3 Ball Delay", "3 Ball Delay");
     autoChooser.addOption("6 Ball Path", "6 Ball Path");
     autoChooser.addOption("6 Ball Manual", "6 Ball Manual");
+    autoChooser.addOption("6 Ball Timer", "6 Ball Timer");
     autoChooser.addOption("Left Turn", "Left Turn");
     autoChooser.addOption("Line", "Line");
 
@@ -56,6 +66,13 @@ public class Robot extends TimedRobot {
 
     // LIDAR
     m_robotContainer.launchCommand.launcher.lidar.startMeasuring();
+    m_autoCommand1 = m_robotContainer.getAutonomousCommand("3 Ball Forward");
+    m_autoCommand2 = m_robotContainer.getAutonomousCommand("6 Ball Path");
+    m_autoCommand3 = m_robotContainer.getAutonomousCommand("6 Ball Manual");
+    m_autoCommand4 = m_robotContainer.getAutonomousCommand("6 Ball Timer");
+    m_autoCommand5 = m_robotContainer.getAutonomousCommand("Left Turn");
+    m_autoCommand6 = m_robotContainer.getAutonomousCommand("Line");
+    m_autoCommand7 = m_robotContainer.getAutonomousCommand("3 Ball Delay");
   }
 
   /**
@@ -80,6 +97,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     m_robotContainer.roboPeriodic();
     m_robotContainer.launchCommand.schedule();
+    SmartDashboard.putNumber("RPM", m_robotContainer.launchCommand.launcher.lLaunchMotor.getEncoder().getVelocity());
+
   }
 
   /**
@@ -105,8 +124,24 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_drivebase.resetOdometry(
         new Pose2d(new Translation2d(m_robotContainer.m_drivebase.initX(), m_robotContainer.m_drivebase.initY()),
             new Rotation2d(m_robotContainer.m_drivebase.initTheta())));
+
     if (autoChooser.getSelected() != null) {
-      m_autoCommand = m_robotContainer.getAutonomousCommand(autoChooser.getSelected());
+      if(autoChooser.getSelected().equals("3 Ball Forward")){
+        m_autoCommand = m_autoCommand1;
+      } else if (autoChooser.getSelected().equals("6 Ball Path")){
+        m_autoCommand = m_autoCommand2;
+      } else if (autoChooser.getSelected().equals("6 Ball Manual")){
+        m_autoCommand = m_autoCommand3;
+      } else if (autoChooser.getSelected().equals("6 Ball Timer")){
+        m_autoCommand = m_autoCommand4;
+      } else if (autoChooser.getSelected().equals("Turn Left")){
+        m_autoCommand = m_autoCommand5;
+      } else if (autoChooser.getSelected().equals("Line")){
+        m_autoCommand = m_autoCommand6;
+      } else if (autoChooser.getSelected().equals("3 Ball Delay")){
+        m_autoCommand = m_autoCommand7;
+      }
+
       m_autoCommand.schedule();
     }
   }

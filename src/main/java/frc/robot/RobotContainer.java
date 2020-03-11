@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.turnToAngle;
 import frc.robot.commands.autoIntake;
+import frc.robot.commands.driveForTime;
 import frc.robot.commands.launch;
 import frc.robot.commands.launchAuto;
 import frc.robot.commands.turn90From0;
@@ -64,7 +65,7 @@ public class RobotContainer {
   boolean feedReady = false;
   boolean indexReady = false;
   boolean shootReady = false;
-  boolean shiftState = false; // check this
+  boolean shiftState;
   Timer launcherTimer = new Timer();
   double smolrecord = 100000;
   Trajectory trajectory;
@@ -111,10 +112,18 @@ public class RobotContainer {
 
   public void roboPeriodic() {
     tracker.schedule();
+    if(m_drivebase.shifterPistons.piston.get() == Value.kForward){
+      shiftState = true;
+    } else {
+      shiftState = false;
+    }
+
+    SmartDashboard.putString("Gear", shiftState ? "Low" : "High");
   }
 
   public void autoInit() {
     setpoint = tracker.turret.turretMotor.getEncoder().getPosition(); // might have to add a negative
+  
   }
 
   public void teleopIn() {
@@ -134,10 +143,7 @@ public class RobotContainer {
 
     if (driveJoy.getXButtonPressed()) {
       m_drivebase.shifterPistons.togglePiston();
-      shiftState = true;
     }
-
-    SmartDashboard.putString("Gear", shiftState ? "Low" : "High");
 
     // OPERATOR JOYSTICK
     // // INTAKE
@@ -191,6 +197,7 @@ public class RobotContainer {
 
     launchCommand.set(shootReady, shooting, indexing, trenchShot, indexOut);
     launchCommand.schedule();
+    
     boolean RAxis = opJoy.getTriggerAxis(Hand.kRight) > 0.05;
     boolean LAxis = opJoy.getTriggerAxis(Hand.kLeft) > 0.05;
     boolean RBumper = opJoy.getBumper(Hand.kRight);
@@ -265,18 +272,28 @@ public class RobotContainer {
     switch (path) {
     case "6 Ball Path":
       return new launchAuto().andThen(new turnToAngle(0))
-          .andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()));
+          .andThen(pathFollow("output/6 Ball Path Part 1.wpilib.json").alongWith(new autoIntake()));
     // return new launchAuto().andThen(pathFollow("output/6 Ball Path Part
     // 1.wpilib.json")).alongWith(new autoIntake()).andThen(new launchAuto());
     case "6 Ball Manual":
       return new launchAuto().andThen(new turn90From0())
-          .andThen(pathFollow("output/6 Ball Part 1.wpilib.json").alongWith(new autoIntake()))
+          .andThen(pathFollow("output/6 Ball Path Part 1.wpilib.json").alongWith(new autoIntake()))
           .andThen(new turn180From0()).andThen(new trackToPortLeftAuto())
           .alongWith(new WaitCommand(2).andThen(new launchAuto()));
+    case "6 Ball Timer":
+      return new launchAuto().andThen(new turn90From0()).andThen(new driveForTime(3, .5).alongWith(new autoIntake()))
+          .andThen(new turn180From0()).andThen(new trackToPortLeftAuto())
+          .alongWith(new WaitCommand(2).andThen(new launchAuto()));
+    // case "6 Ball Distance":
+    //   return new launchAuto().andThen(new turn90From0()).andThen(new driveForDistance(4.7).alongWith(new autoIntake()))
+    //       .andThen(new turn180From0()).andThen(new trackToPortLeftAuto())
+    //       .alongWith(new WaitCommand(2).andThen(new launchAuto()));
     case "Left Turn":
       return new turnToAngle(0);
     case "3 Ball Forward":
       return new launchAuto().andThen(pathFollow("output/Line.wpilib.json"));
+    case "3 Ball Delay":
+      return new WaitCommand(5).andThen(new launchAuto()).andThen(pathFollow("output/Line.wpilib.json"));
     case "Line":
       return pathFollow("output/Line.wpilib.json");
     }

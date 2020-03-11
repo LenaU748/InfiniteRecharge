@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -21,12 +22,15 @@ public class launch extends CommandBase {
    * Creates a new launch.
    */
   boolean shootReady;
+  boolean prevShootReady = false;
   public LauncherBase launcher = new LauncherBase();
   public FeederBase feeder = new FeederBase();
   double distance;
+  double reference = 0;
   boolean shooting;
   boolean indexing;
   boolean trenchShot;
+  boolean prevTrenchShot = false;
   boolean indexOut;
   double trenchRPM = 5600;
 
@@ -50,16 +54,20 @@ public class launch extends CommandBase {
 
   public boolean inRange() {
     System.out.println(launcher.lLaunchMotor.getEncoder().getVelocity());
-    // May need to fix this range
+    // May need to fix this range 
     if (shootReady || trenchShot) {
       if (shootReady) {
-        return (launcher.lLaunchMotor.getEncoder().getVelocity() >= .98 * launcher.calculateRPMModel()
-            && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.02 * launcher.calculateRPMModel()))
-            || launcher.lLaunchMotor.getEncoder().getVelocity() > 5800;
+        if (!prevShootReady) {
+          reference = launcher.rLaunchMotor.getEncoder().getVelocity();
+        }
+        return ((launcher.lLaunchMotor.getEncoder().getVelocity() >= (.98 * launcher.calculateRPMModel())
+            && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.02 * launcher.calculateRPMModel())))
+            || (launcher.lLaunchMotor.getEncoder().getVelocity() >= 5400);
       } else {
-        return (launcher.lLaunchMotor.getEncoder().getVelocity() >= .98 * trenchRPM
-            && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.02 * trenchRPM))
-            || launcher.lLaunchMotor.getEncoder().getVelocity() > 5800;
+        if (!prevTrenchShot) {
+          reference = launcher.rLaunchMotor.getEncoder().getVelocity();
+        }
+        return ((launcher.lLaunchMotor.getEncoder().getVelocity() >= 5400));
       }
     } else {
       return true;
@@ -83,7 +91,8 @@ public class launch extends CommandBase {
       if (shootReady) {
         launcher.setRPM(launcher.calculateRPMModel());
       } else {
-        launcher.setRPM(trenchRPM);
+        launcher.lLaunchMotor.set(1);// change back to 1
+        launcher.rLaunchMotor.set(1);
       }
 
       if (inRange()) {
@@ -105,11 +114,15 @@ public class launch extends CommandBase {
       }
 
       if (shooting) {
-        launcher.setRPM(5300);
+        // launcher.lLaunchMotor.set(1);
+        launcher.setRPM(5400);
       } else {
         launcher.stop();
       }
     }
+
+    prevShootReady = shooting;
+    prevTrenchShot = trenchShot;
   }
 
   // Called once the command ends or is interrupted.

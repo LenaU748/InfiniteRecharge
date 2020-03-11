@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +25,7 @@ public class ClimberBase extends SubsystemBase {
 
   public ClimberBase() {
     climberPID.setOutputRange(-1.0, 1.0);
+    climberMotor.setIdleMode(IdleMode.kBrake);
   }
 
   @Override

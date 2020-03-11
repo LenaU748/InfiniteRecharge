@@ -114,11 +114,15 @@ public class Drivebase extends SubsystemBase {
       return 3.2;
     case "6 Ball Manual":
       return 3.2;
+    case "6 Ball Timer":
+      return 3.2;
     case "Left Turn":
       return 1;
     case "3 Ball Forward":
       return 1;
     case "Line":
+      return 1;
+    case "3 Ball Delay":
       return 1;
     }
 
@@ -133,11 +137,15 @@ public class Drivebase extends SubsystemBase {
       return -0.7;
     case "6 Ball Manual":
       return -.7;
+    case "6 Ball Timer":
+      return -.7;
     case "Left Turn":
       return -1;
     case "3 Ball Forward":
       return -1;
     case "Line":
+      return -1;
+    case "3 Ball Delay":
       return -1;
     }
   }
@@ -151,12 +159,16 @@ public class Drivebase extends SubsystemBase {
       return Rotation2d.fromDegrees(0).getRadians(); // -90 or 270?
     case "6 Ball Manual":
       return Rotation2d.fromDegrees(0).getRadians();
+    case "6 Ball Timer":
+      return 0;
     case "Left Turn":
       return Rotation2d.fromDegrees(-90).getRadians();
     case "3 Ball Forward":
       return Rotation2d.fromDegrees(0).getRadians();
     case "Line":
       return 0;
+    case "3 Ball Delay":
+      return Rotation2d.fromDegrees(0).getRadians();
     }
   }
 
@@ -169,11 +181,15 @@ public class Drivebase extends SubsystemBase {
       return 0; // -90 or 270?
     case "6 Ball Manual":
       return 0;
+    case "6 Ball Timer":
+      return 0;
     case "Left Turn":
       return -90;
     case "3 Ball Forward":
       return 0;
     case "Line":
+      return 0;
+    case "3 Ball Delay":
       return 0;
     }
   }

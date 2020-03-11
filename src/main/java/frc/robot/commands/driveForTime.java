@@ -11,42 +11,39 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 
-public class launchAuto extends CommandBase {
+public class driveForTime extends CommandBase {
   /**
-   * Creates a new launchAuto.
+   * Creates a new driveForTime.
    */
+  double time, speed;
+  Timer timer = new Timer();
 
-  private Timer autoLaunchTimer = new Timer();
-  public launchAuto() {
+  public driveForTime(double _time, double _speed) {
     // Use addRequirements() here to declare subsystem dependencies.
+    time = _time;
+    speed = _speed;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    autoLaunchTimer.start();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Robot.m_robotContainer.tracker.set(true);
-    Robot.m_robotContainer.launchCommand.set(true, false, false, false, false);
-    if (autoLaunchTimer.get() > 1) {
-      Robot.m_robotContainer.launchCommand.feeder.feederMotor.set(0.5);
-    }
+    Robot.m_robotContainer.m_drivebase.m_drive.arcadeDrive(speed, 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Robot.m_robotContainer.tracker.set(false);
-    Robot.m_robotContainer.launchCommand.set(false, false, false, false, false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return autoLaunchTimer.get() > 4;
+    return timer.get() > time;
   }
 }
