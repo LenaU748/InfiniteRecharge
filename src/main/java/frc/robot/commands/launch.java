@@ -57,17 +57,11 @@ public class launch extends CommandBase {
     // May need to fix this range 
     if (shootReady || trenchShot) {
       if (shootReady) {
-        if (!prevShootReady) {
-          reference = launcher.rLaunchMotor.getEncoder().getVelocity();
-        }
         return ((launcher.lLaunchMotor.getEncoder().getVelocity() >= (.98 * launcher.calculateRPMModel())
             && launcher.lLaunchMotor.getEncoder().getVelocity() < (1.02 * launcher.calculateRPMModel())))
             || (launcher.lLaunchMotor.getEncoder().getVelocity() >= 5400);
       } else {
-        if (!prevTrenchShot) {
-          reference = launcher.rLaunchMotor.getEncoder().getVelocity();
-        }
-        return ((launcher.lLaunchMotor.getEncoder().getVelocity() >= 5400));
+        return true;//((launcher.lLaunchMotor.getEncoder().getVelocity() >= 5400));
       }
     } else {
       return true;
@@ -91,8 +85,8 @@ public class launch extends CommandBase {
       if (shootReady) {
         launcher.setRPM(launcher.calculateRPMModel());
       } else {
-        launcher.lLaunchMotor.set(1);// change back to 1
-        launcher.rLaunchMotor.set(1);
+        launcher.lLaunchMotor.set(Robot.m_robotContainer.rpmSet);//1);// change back to 1
+        launcher.rLaunchMotor.set(Robot.m_robotContainer.rpmSet);//1);
       }
 
       if (inRange()) {

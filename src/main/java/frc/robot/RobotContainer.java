@@ -108,6 +108,7 @@ public class RobotContainer {
 
   // Match Period Code
   public void roboInit() {
+    SmartDashboard.putNumber("RPM Control", 0);
   }
 
   public void roboPeriodic() {
@@ -119,6 +120,7 @@ public class RobotContainer {
     }
 
     SmartDashboard.putString("Gear", shiftState ? "Low" : "High");
+    SmartDashboard.putNumber("Launch RPM", launchCommand.launcher.lLaunchMotor.getEncoder().getVelocity());
   }
 
   public void autoInit() {
@@ -131,6 +133,7 @@ public class RobotContainer {
 
   public void teleop() {
     // SMARTDASHBOARD
+    rpmSet = SmartDashboard.getNumber("RPM Control", 0);
 
     // DRIVE JOYSTICK
     // // DRIVEBASE

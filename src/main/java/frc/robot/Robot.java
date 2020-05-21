@@ -97,6 +97,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     m_robotContainer.roboPeriodic();
     m_robotContainer.launchCommand.schedule();
+    SmartDashboard.putNumber("LIDAR d", m_robotContainer.launchCommand.launcher.lidar.getDistance());
     SmartDashboard.putNumber("RPM", m_robotContainer.launchCommand.launcher.lLaunchMotor.getEncoder().getVelocity());
 
   }
