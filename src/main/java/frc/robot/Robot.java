@@ -99,6 +99,12 @@ public class Robot extends TimedRobot {
     m_robotContainer.launchCommand.schedule();
     SmartDashboard.putNumber("LIDAR d", m_robotContainer.launchCommand.launcher.lidar.getDistance());
     SmartDashboard.putNumber("RPM", m_robotContainer.launchCommand.launcher.lLaunchMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("L Enc pos", m_robotContainer.m_drivebase.left_encPos);
+    SmartDashboard.putNumber("L Enc vel", m_robotContainer.m_drivebase.left_encVel);
+    SmartDashboard.putNumber("R Enc pos", m_robotContainer.m_drivebase.right_encPos);
+    SmartDashboard.putNumber("R Enc vel", m_robotContainer.m_drivebase.right_encVel);
+    SmartDashboard.putNumber("Gyro", m_robotContainer.m_drivebase.m_gyro.getYaw());
+
 
   }
 
