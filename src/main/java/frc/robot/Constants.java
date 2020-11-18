@@ -111,7 +111,8 @@ public final class Constants {
                                kvVoltSecondsPerMeter = 2.1, 
                                kaVoltSecondsSquaredPerMeter = 0.217,
                                kTrackwidthMeters = 0.653, 
-                               kP = 5, // 8.87,
+                               kLP = 4, //8.87, /*8.87,*/
+                               kRP = 4, //8.87, /*5,*/
                                kD = 0.0, 
                                kMaxSpeedMetersPerSecond = 4.953, // 4,//4.953,//2.5 // Need to be changed
                                kMaxAccelerationMetersPerSecondSquared = 8.5344, // 4,//6,//8.5344,//4 // Need to be changed

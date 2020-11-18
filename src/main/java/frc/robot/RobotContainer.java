@@ -69,6 +69,7 @@ public class RobotContainer {
   Timer launcherTimer = new Timer();
   double smolrecord = 100000;
   Trajectory trajectory;
+  Trajectory exampleTrajectory;
   public double rpmSet;
   boolean prevLAxis = false;
   boolean prevRAxis = false;
@@ -308,16 +309,19 @@ public class RobotContainer {
     try {
       Path testTrajectory = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
       trajectory = TrajectoryUtil.fromPathweaverJson(testTrajectory);
+
+      var transform = m_drivebase.getPose().minus(trajectory.getInitialPose());
+      exampleTrajectory = trajectory.transformBy(transform);
     } catch (final IOException ex) {
       // TODO Auto-generated catch block
       DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
     }
-    final RamseteCommand ramseteCommand = new RamseteCommand(trajectory, m_drivebase::getPose,
+    final RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, m_drivebase::getPose,
         new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
         new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltSecondsPerMeter,
             Constants.kaVoltSecondsSquaredPerMeter),
-        Constants.m_driveKinematics, m_drivebase::getWheelSpeeds, new PIDController(Constants.kP, 0, 0),
-        new PIDController(Constants.kP, 0, 0), m_drivebase::voltageControl, m_drivebase);
+        Constants.m_driveKinematics, m_drivebase::getWheelSpeeds, new PIDController(Constants.kLP, 0, 0),
+        new PIDController(Constants.kRP, 0, 0), m_drivebase::voltageControl, m_drivebase);
     // Run path following command, then stop at the end.
     // Robot.m_robotContainer.m_driveAuto.m_drive.feed();
     return ramseteCommand;

@@ -61,10 +61,10 @@ public class Drivebase extends SubsystemBase {
 
     leftEnc.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
     rightEnc.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
-    lfMotor.setIdleMode(IdleMode.kBrake);
-    lbMotor.setIdleMode(IdleMode.kBrake);
-    rfMotor.setIdleMode(IdleMode.kBrake);
-    rbMotor.setIdleMode(IdleMode.kBrake);
+    lfMotor.setIdleMode(IdleMode.kCoast);
+    lbMotor.setIdleMode(IdleMode.kCoast);
+    rfMotor.setIdleMode(IdleMode.kCoast);
+    rbMotor.setIdleMode(IdleMode.kCoast);
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()),
         new Pose2d(initX(), initY(), new Rotation2d(initTheta())));
   }
